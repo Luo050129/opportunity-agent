@@ -1,0 +1,22 @@
+# 本机专用 / 敏感配置
+llm.local.json
+.env
+.env.local
+*.local.json
+
+# Python 运行产物
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 工作台数据
+.workbuddy/

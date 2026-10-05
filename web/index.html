@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>商机录入与分析助手 Agent</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>商机录入与分析助手 Agent</h1>
+      <p class="tagline">拜访记录 → CRM 十字段结构化 + 规则校验 + 结构化追问；判定全部来自题目给定规则</p>
+    </div>
+    <div class="badges" id="badges"></div>
+  </header>
+
+  <main class="layout">
+    <section class="panel input-panel">
+      <h2>1. 输入拜访记录</h2>
+      <textarea id="input-text" spellcheck="false"
+        placeholder="把销售拜访记录粘贴到这里，例如：&#10;客户：华兴连锁超市&#10;沟通记录：陈经理说门店补货靠店长经验，希望系统能自动给出补货建议……"></textarea>
+
+      <div class="row">
+        <label class="file-button">
+          上传文件（.txt / .docx / .pdf）
+          <input type="file" id="file-input" accept=".txt,.md,.csv,.docx,.pdf" />
+        </label>
+        <button id="analyze-btn" class="primary">开始分析</button>
+        <button id="clear-btn" class="ghost">清空</button>
+      </div>
+      <p class="hint" id="upload-hint">
+        支持粘贴文本与上传文件；不提供图片 OCR，截图请先转成文字。
+      </p>
+
+      <div class="samples">
+        <span class="samples-label">一键样例：</span>
+        <div id="sample-list" class="chip-row"></div>
+      </div>
+
+      <details class="fold" id="rules-panel">
+        <summary>规则依据（题目给定的 6 条分析规则 + S0–S5 阶段定义）</summary>
+        <div id="rules-body" class="fold-body"></div>
+      </details>
+
+      <details class="fold">
+        <summary>使用说明与输出字段说明</summary>
+        <div class="fold-body small">
+          <p><strong>支持的输入：</strong>直接粘贴拜访记录文本；上传 .txt / .md / .csv / .docx / 文本型 .pdf。扫描件或加密 PDF 会明确提示无法解析，请改用粘贴文本。</p>
+          <p><strong>规则怎么用：</strong>字段抽取、阶段判定与问题清单全部由 <code>rules/</code> 下的题目规则与词典驱动（R-01 事实边界、R-02 推断处理、R-03 缺失信息、R-04 证据要求、R-05 矛盾处理、R-06 下一步行动，以及 S0–S5 达成条件），不依赖大模型常识自由判断。</p>
+          <p><strong>输出字段：</strong>需求、核心场景、预算、决策人、影响人、时间计划、阶段、风险、下一步、未确认信息；每个字段带状态（事实／推断／未确认）与原话证据。</p>
+          <p><strong>校验报告：</strong>是否合规、具体问题、对应规则、风险等级、整改建议、无法判断原因。</p>
+          <p><strong>Agent 编排：</strong>本页底部的「执行轨迹」会展示本次的工具调用计划与逐步执行情况。有可用模型时由模型规划“调用哪些工具、按什么顺序”，没模型时用规则引擎默认编排；两者判定结果一致，因为字段值、证据与阶段全部由本地规则引擎的工具产出。</p>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel result-panel" id="result-panel">
+      <div class="empty-state" id="empty-state">
+        <h2>2. 分析结果</h2>
+        <p>点击「开始分析」后，这里会展示 CRM 十字段、阶段判定过程、规则校验报告和待确认问题。</p>
+        <ul>
+          <li>字段结论带状态标签：事实 / 推断 / 未确认，并保留原话证据</li>
+          <li>阶段判定可回溯到 S0–S5 达成条件，并说明“还缺什么证据”</li>
+          <li>信息不足或规则未覆盖时，明确输出「无法判断，建议人工复核」</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
